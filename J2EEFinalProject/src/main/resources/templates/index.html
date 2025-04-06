@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Finance Insanity</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Finance Tracker</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/transactions">Manage Transactions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/automatedtransactions">Manage Automated Transactions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/budget">Manage Budget</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/investments">Manage Investments</a>
+        </li>
+        <li class="nav-item" th:if="${userExists}">
+          <a class="nav-link" href="/logout">Logout</a>
+        </li>
+        <li class="nav-item" th:if="${!userExists}">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+        <li class="nav-item" th:if="${!userExists}">
+          <a class="nav-link" href="/signup">Sign Up</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container text-center mt-5">
+  <h1 class="display-4 text-primary">Welcome to the Ultimate Tracker of Money</h1>
+  <p class="lead mt-3">Do all sorts of things in the wonderful (and exciting) world of FINANCE!</p>
+
+  <div class="row justify-content-center mt-4">
+    <div class="col-md-3">
+      <a href="/transactions" class="btn btn-outline-primary btn-lg w-100 mb-3">Manage Transactions</a>
+    </div>
+
+    <div class="col-md-3">
+      <a href="/automatedtransactions" class="btn btn-outline-warning btn-lg w-100 mb-3">Manage Auto Transactions</a>
+    </div>
+    <div class="col-md-3">
+      <a href="/budget" class="btn btn-outline-success btn-lg w-100 mb-3">Manage Budget</a>
+    </div>
+    <div class="col-md-3">
+      <a href="/investments" class="btn btn-outline-info btn-lg w-100 mb-3">Manage Investments</a>
+    </div>
+  </div>
+</div>
+
+<footer class="bg-dark text-white text-center p-3 mt-5">
+  &copy; 2025 Bound To Earth Productions. All rights reserved.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

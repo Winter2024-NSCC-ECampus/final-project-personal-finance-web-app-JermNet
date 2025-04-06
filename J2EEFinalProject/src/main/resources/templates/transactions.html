@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Transact Your Stuff</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Finance Tracker</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/transactions">Manage Transactions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/automatedtransactions">Manage Automated Transactions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/budget">Manage Budget</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/investments">Manage Investments</a>
+        </li>
+        <li class="nav-item" th:if="${userExists}">
+          <a class="nav-link" href="/logout">Logout</a>
+        </li>
+        <li class="nav-item" th:if="${!userExists}">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+        <li class="nav-item" th:if="${!userExists}">
+          <a class="nav-link" href="/signup">Sign Up</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-5">
+  <h1 class="text-center text-primary mb-4">Transact Your Stuff</h1>
+  <div class="card shadow-lg">
+    <div class="card-body">
+      <h5 class="card-title">Add a Transaction</h5>
+      <form th:action="@{/transactions/save}" method="post">
+        <div class="mb-3">
+          <label class="form-label">Type:</label>
+          <select class="form-select" name="type">
+            <option value="INCOME">Income</option>
+            <option value="EXPENSE">Expense</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Category:</label>
+          <select class="form-select" name="category">
+            <option value="HOUSING">Housing</option>
+            <option value="FOOD">Food</option>
+            <option value="TRANSPORT">Transport</option>
+            <option value="ENTERTAINMENT">Entertainment</option>
+            <option value="MISC">Miscellaneous</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <input type="text" class="form-control" name="tag" placeholder="Tag">
+        </div>
+        <div class="mb-3">
+          <input type="number" class="form-control" name="amount" step="0.01" placeholder="Amount" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Date:</label>
+          <input type="date" class="form-control" name="date" required>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Add Transaction</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="card mt-4 shadow-lg">
+    <div class="card-body">
+      <h5 class="card-title">Income vs Expenses</h5>
+      <canvas id="financeChart"></canvas>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <h3 class="text-success">Income</h3>
+      <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+          <th>Category</th>
+          <th>Tag</th>
+          <th>Amount</th>
+          <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="transaction : ${transactions}" th:if="${transaction.type.name() == 'INCOME'}">
+          <td th:text="${transaction.category}"></td>
+          <td th:text="${transaction.tag}"></td>
+          <td class="text-success" th:text="'$' + ${transaction.amount}"></td>
+          <td th:text="${transaction.date}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-6">
+      <h3 class="text-danger">Expenses</h3>
+      <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+          <th>Category</th>
+          <th>Tag</th>
+          <th>Amount</th>
+          <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="transaction : ${transactions}" th:if="${transaction.type.name() == 'EXPENSE'}">
+          <td th:text="${transaction.category}"></td>
+          <td th:text="${transaction.tag}"></td>
+          <td class="text-danger" th:text="'$' + ${transaction.amount}"></td>
+          <td th:text="${transaction.date}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!--Used to hand info to the script so it can be graphed -->
+<div id="chartData" th:data-income="${incomeAmounts}" th:data-expenses="${expenseAmounts}" th:data-labels="${transactionDates}"></div>
+<script src="/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Automate Your Income & Expenses TODAY!</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Finance Tracker</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/transactions">Manage Transactions</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/automatedtransactions">Manage Automated Transactions</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/budget">Manage Budget</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/investments">Manage Investments</a>
+                </li>
+                <li class="nav-item" th:if="${userExists}">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+                <li class="nav-item" th:if="${!userExists}">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item" th:if="${!userExists}">
+                    <a class="nav-link" href="/signup">Sign Up</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h1 class="text-center text-primary mb-4">Automate Your Income & Expenses TODAY!</h1>
+    <div class="card shadow-lg">
+        <div class="card-body">
+            <h5 class="card-title">Add Recurring Income/Expense</h5>
+            <form th:action="@{/automatedtransactions/save}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Type:</label>
+                    <select class="form-select" name="type">
+                        <option value="INCOME">Income</option>
+                        <option value="EXPENSE">Expense</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Category:</label>
+                    <select class="form-select" name="category">
+                        <option value="HOUSING">Housing</option>
+                        <option value="FOOD">Food</option>
+                        <option value="TRANSPORT">Transport</option>
+                        <option value="ENTERTAINMENT">Entertainment</option>
+                        <option value="MISC">Miscellaneous</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Amount:</label>
+                    <input type="number" class="form-control" name="amount" step="0.01" placeholder="Amount" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Start Date:</label>
+                    <input type="date" class="form-control" name="startDate" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Frequency:</label>
+                    <select class="form-select" name="frequency">
+                        <option value="YEARLY">Yearly</option>
+                        <option value="MONTHLY">Monthly</option>
+                        <option value="BIWEEKLY">Biweekly</option>
+                        <option value="WEEKLY">Weekly</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Save Automation</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mt-4 shadow-lg">
+        <div class="card-body">
+            <h5 class="card-title">Your Automated Transactions</h5>
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Start Date</th>
+                    <th>Frequency</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="automatedTransaction : ${automatedTransactions}">
+                    <td th:text="${automatedTransaction.type}"></td>
+                    <td th:text="${automatedTransaction.category}"></td>
+                    <td th:text="'$' + ${automatedTransaction.amount}"></td>
+                    <td th:text="${automatedTransaction.startDate}"></td>
+                    <td th:text="${automatedTransaction.frequency}"></td>
+                    <td>
+                        <form th:action="@{/automatedtransactions/delete/{id}(id=${automatedTransaction.id})}" method="post" th:object="${automatedTransaction}">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(automatedTransactions)}">
+                    <td colspan="6" class="text-center text-muted">No automated transactions set up yet.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

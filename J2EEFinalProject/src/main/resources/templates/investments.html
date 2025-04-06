@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Investment Mode</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Finance Tracker</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/transactions">Manage Transactions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/automatedtransactions">Manage Automated Transactions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/budget">Manage Budget</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/investments">Manage Investments</a>
+        </li>
+        <li class="nav-item" th:if="${userExists}">
+          <a class="nav-link" href="/logout">Logout</a>
+        </li>
+        <li class="nav-item" th:if="${!userExists}">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+        <li class="nav-item" th:if="${!userExists}">
+          <a class="nav-link" href="/signup">Sign Up</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-5">
+  <h1 class="text-center text-primary mb-4">Investment Mode</h1>
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Add Investment</h5>
+      <form th:action="@{/investments/save}" method="post">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Investment Name</label>
+            <input type="text" class="form-control" name="name" required>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Category</label>
+            <select class="form-select" name="category">
+              <option value="STOCK">Stock</option>
+              <option value="CRYPTO">Crypto</option>
+              <option value="REAL_ESTATE">Real Estate</option>
+              <option value="MUTUAL_FUND">Mutual Fund</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Original Amount</label>
+            <input type="number" class="form-control" name="originalAmount" step="0.01" required>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Current Value</label>
+            <input type="number" class="form-control" name="currentValue" step="0.01" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success">Add Investment</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">Your Investments</h5>
+      <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Original Amount</th>
+          <th>Current Value</th>
+          <th>Gain/Loss</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="investment : ${investments}">
+          <td th:text="${investment.name}"></td>
+          <td th:text="${investment.category}"></td>
+          <td th:text="'$' + ${investment.originalAmount}"></td>
+          <td th:text="'$' + ${investment.currentValue}"></td>
+          <td th:class="${investment.currentValue > investment.originalAmount} ? 'text-success' : 'text-danger'">
+            <span th:text="'$' + (${investment.currentValue} - ${investment.originalAmount})"></span>
+            (<span th:text="((${investment.currentValue} - ${investment.originalAmount}) / ${investment.originalAmount}) * 100 + '%'"></span>)
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
